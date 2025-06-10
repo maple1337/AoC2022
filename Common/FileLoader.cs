@@ -14,14 +14,16 @@ namespace Common
                         .ToList();
         }
 
-        public static List<List<String>> LoadFileInGroupsOfThree<T>(string path) 
+        public static List<T> LoadFileInGroupsOfThree<T>(string path, Func<string[], T> converter)
         {
-            var groupsOfThree = (File.ReadAllLines(path)
+            return File.ReadAllLines(path)
                 .Select((line, index) => new { Line = line, GroupId = index / 3 })
                 .GroupBy(x => x.GroupId)
-                .Select(group => group.Select(x => x.Line).ToList())
-                .ToList());
-            return groupsOfThree;
+                .Select(group => group
+                    .Select(x => x.Line)
+                    .ToArray())
+                    .Select(converter)
+                    .ToList();
         }
     }
 }

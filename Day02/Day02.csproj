@@ -5,11 +5,23 @@
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <RootNamespace>Day02</RootNamespace>
   </PropertyGroup>
 
 
 	<ItemGroup>
 		<ProjectReference Include="..\Common\Common.csproj" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <Compile Remove="._Day02.cs" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <None Remove="._obj" />
+	  <None Remove="._bin" />
 	</ItemGroup>
 	
 </Project>

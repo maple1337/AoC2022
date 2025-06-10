@@ -12,19 +12,28 @@ public static class Program
     private const string InputFile = "..//..//..//input.txt";
     static void Main(string[] args)
     {
-        var input = FileLoader.LoadFile<Rucksack>(InputFile, line =>
-        {
-            var firstCompartment = line.Substring(0, line.Length / 2);
-            var secondCompartment = line.Substring(line.Length / 2);
-            return new Rucksack(firstCompartment, secondCompartment);       
-        });
+        var input = FileLoader.LoadFile<Rucksack>(InputFile, Converter);
 
-        var inputP2 = FileLoader.LoadFileInGroupsOfThree<String>(InputFile);
+        var inputP2 = FileLoader.LoadFileInGroupsOfThree<ElfGroup>(InputFile, Converter2);
         
-        var part1 = input.Select(r => DataProcessor.CalculatePriority(r)).Sum();
+        var part1 = input.Select(DataProcessor.CalculatePriority).Sum();
         Console.WriteLine("Result Part1: " + part1);
-        var part2 = DataProcessor.CalculateBadgePriority(inputP2);
+        var part2 = inputP2.Select(DataProcessor.CalculateBadgePriority).Sum();
         Console.WriteLine("Result Part2: " + part2);
+    }
+    public static Rucksack Converter(string line)
+    {
+        var firstCompartment = line.Substring(0, line.Length / 2);
+        var secondCompartment = line.Substring(line.Length / 2);
+        return new Rucksack(firstCompartment, secondCompartment);
+    }
+
+    public static ElfGroup Converter2(string[] rucksaecke)
+    {
+        var firstElf = rucksaecke[0];
+        var secondElf = rucksaecke[1];
+        var thirdElf = rucksaecke[2];
+        return new ElfGroup(firstElf, secondElf, thirdElf);       
     }
 }
 
@@ -39,6 +48,18 @@ public readonly record struct Rucksack
     public readonly string SecondCompartment { get; init; }   
 }
 
+public readonly record struct ElfGroup
+{
+    public ElfGroup(string firstElf, string secondElf, string thirdElf)
+    {
+        String[] elf = { firstElf, secondElf, thirdElf };
+        Elf = elf;       
+    }
+    
+    public readonly string[] Elf { get; init; }  
+    
+}
+
 
 public static class DataProcessor
 {
@@ -48,18 +69,18 @@ public static class DataProcessor
         var secondComp = rucksack.SecondCompartment;
         var allMatches = firstComp.Intersect(secondComp).ToList();
         
-        return allMatches.Select(s => GetPriority(s)).Sum();       
+        return allMatches.Select(GetPriority).Sum();       
     }
 
-    public static int CalculateBadgePriority(List<List<String>> elfgroups)
+    public static int CalculateBadgePriority(ElfGroup elfGroup)
     {
-        var commonChars = elfgroups.Select(group =>
-        {
-            var common = group[0].Intersect(group[1]).Intersect(group[2]);
-            return common.FirstOrDefault();
-        }).ToList();
+        var firstBackpack = elfGroup.Elf[0];
+        var secondBackpack = elfGroup.Elf[1];
+        var thirdBackpack = elfGroup.Elf[2];
+        
+        var commonChars = firstBackpack.Intersect(secondBackpack).Intersect(thirdBackpack);
 
-        return commonChars.Select(s => GetPriority(s)).Sum();
+        return commonChars.Select(GetPriority).Sum();
     }
 
     private static int GetPriority(char c)
