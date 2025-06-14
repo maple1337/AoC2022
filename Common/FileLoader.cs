@@ -25,6 +25,11 @@ namespace Common
                     .Select(converter)
                     .ToList();
         }
+
+        public static T LoadFileAsArray<T>(string path, Func<char[], T> converter)
+        {
+            return converter(File.ReadAllText(path).ToCharArray());
+        }
     }
 }
 
