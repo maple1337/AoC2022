@@ -1,6 +1,6 @@
 using Common;
 
-namespace Day04;
+namespace Day06;
 
 public abstract class ADataProcessor
 {
